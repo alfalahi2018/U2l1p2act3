@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Team Talk 2 – Lesson 2, part 2</title>
+<style>
+body{font-family:Arial,sans-serif;background:#e8f4ff;margin:0;padding:12px;color:#223}
+.w{max-width:760px;margin:auto}h1{background:#2a6fb0;color:#fff;padding:12px;border-radius:14px;font-size:20px;margin:0 0 10px}
+.card{background:#fff;border-radius:14px;padding:12px;margin:10px 0;box-shadow:0 2px 6px #0002}
+.chip{display:inline-block;padding:7px 12px;margin:4px;border-radius:20px;background:#ffd23f;font-weight:bold;cursor:grab;user-select:none;border:2px solid #e0a800}
+.chip.name{background:#9be7b0;border-color:#4cae6a}.chip.sel{outline:3px solid #2a6fb0}
+.slot{display:inline-block;min-width:80px;min-height:30px;border-bottom:3px dashed #2a6fb0;text-align:center;vertical-align:middle;margin:0 4px;background:#f3f8ff;border-radius:6px}
+.slot.ok{background:#c8f7c5;border-bottom-color:#2ca02c}.slot.no{background:#ffd0d0;border-bottom-color:#d33}
+.row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid #eee;font-size:17px}
+.n{background:#e8473b;color:#fff;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold}
+button{background:#2a6fb0;color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:16px;margin:4px;cursor:pointer}
+#res{font-size:18px;font-weight:bold;text-align:center}.cr{text-align:center;font-size:13px;color:#456}
+svg{width:100%;max-height:120px}
+</style></head><body><div class="w">
+<h1>🎧 Team Talk 2 · Lesson 2, part 2 – Listen and complete</h1>
+<div class="card"><svg viewBox="0 0 600 110"><rect width="600" height="110" fill="#bfe8c0" rx="12"/><g fill="#2e7d32"><path d="M40 110v-50l20-30 20 30v50zM500 110v-60l25-35 25 35v60z"/></g><circle cx="200" cy="55" r="16" fill="#f4c28b"/><rect x="186" y="70" width="28" height="40" rx="8" fill="#e91e63"/><circle cx="280" cy="55" r="16" fill="#f4c28b"/><rect x="266" y="70" width="28" height="40" rx="8" fill="#3f51b5"/><circle cx="360" cy="55" r="16" fill="#8d5a3b"/><rect x="346" y="70" width="28" height="40" rx="8" fill="#9c27b0"/><text x="300" y="22" text-anchor="middle" font-size="16" fill="#1b5e20">There are lots of different animals here!</text></svg>
+<b>Step 1:</b> Press play and listen to the dialogue. <br><audio id="au" controls preload="auto" style="width:100%" src="audio1.mp3"></audio></div>
+<div class="card"><b>Step 2:</b> Drag (or tap, then tap the gap) the <b>names</b> and the <b>words</b> to complete the sentences. Who says them?
+<div id="names"></div><div id="words"></div></div>
+<div class="card" id="items"></div>
+<div style="text-align:center"><button onclick="check()">✅ Check</button><button onclick="build()">🔄 Try again</button><button onclick="document.getElementById('au').play()">▶ Listen again</button></div>
+<div id="res"></div><div class="cr">Created by T.Badria Alfalahi</div></div>
+<script>
+// Edit answers here if needed: [speaker, missing word]
+const SPEAKERS=["Emily","Bayan","Nawal"];
+const ITEMS=[
+["Emily","There are lots of","different","animals here."],
+["Bayan","Hey! There's","something","over there!"],
+["Nawal","It might be a bear with long","claws","!"],
+["Emily","It can't be a bird. It doesn't have","wings","."],
+["Bayan","It doesn't have","fur","  . Oh! It has spines!"],
+["Nawal","No, you shouldn't","touch","it. It may be scared."]];
+let sel=null;
+function chip(t,c){const e=document.createElement("span");e.className="chip "+c;e.textContent=t;e.draggable=true;e.dataset.v=t;e.dataset.k=c;
+e.ondragstart=ev=>{ev.dataTransfer.setData("t",t);ev.dataTransfer.setData("k",c)};
+e.onclick=()=>{document.querySelectorAll(".sel").forEach(x=>x.classList.remove("sel"));sel=e;e.classList.add("sel")};return e}
+function fill(s,t,k){if(s.dataset.k!=k)return;s.textContent=t;s.dataset.v=t;s.className="slot"}
+function slot(k){const s=document.createElement("span");s.className="slot";s.dataset.k=k;
+s.ondragover=e=>e.preventDefault();s.ondrop=e=>{e.preventDefault();fill(s,e.dataTransfer.getData("t"),e.dataTransfer.getData("k"))};
+s.onclick=()=>{if(sel){fill(s,sel.dataset.v,sel.dataset.k);sel.classList.remove("sel");sel=null}};return s}
+function build(){const n=document.getElementById("names"),w=document.getElementById("words"),it=document.getElementById("items");
+n.innerHTML="<b>Who? </b>";w.innerHTML="<b>Words: </b>";it.innerHTML="";document.getElementById("res").textContent="";
+SPEAKERS.forEach(s=>n.append(chip(s,"name")));
+[...ITEMS.map(i=>i[2])].sort(()=>Math.random()-.5).forEach(x=>w.append(chip(x,"word")));
+ITEMS.forEach((i,k)=>{const r=document.createElement("div");r.className="row";r.innerHTML='<span class="n">'+(k+1)+"</span>";
+r.append(slot("name"));r.append(i[1]+" ");r.append(slot("word"));r.append(" "+i[3]);it.append(r)})}
+function check(){let sc=0;const rows=document.querySelectorAll(".row");
+ITEMS.forEach((i,k)=>{const s=rows[k].querySelectorAll(".slot");[[s[0],i[0]],[s[1],i[2]]].forEach(([e,a])=>{const ok=e.dataset.v===a;e.className="slot "+(ok?"ok":"no");if(ok)sc++})});
+document.getElementById("res").textContent="Score: "+sc+" / "+ITEMS.length*2+(sc==ITEMS.length*2?" 🌟 Excellent!":sc>=8?" 👍 Good job!":" 💪 Listen again and try!")}
+build();
+</script></body></html>

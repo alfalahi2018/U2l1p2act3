@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Team Talk 2 – Expressions</title>
+<style>
+body{font-family:Arial,sans-serif;background:#e8f4ff;margin:0;padding:12px;color:#223}.w{max-width:760px;margin:auto}
+h1{background:#2a6fb0;color:#fff;padding:12px;border-radius:14px;font-size:20px;margin:0 0 10px}
+.card{background:#fff;border-radius:14px;padding:12px;margin:10px 0;box-shadow:0 2px 6px #0002}
+.chip{display:inline-block;padding:8px 14px;margin:4px;border-radius:20px;background:#ffd23f;font-weight:bold;cursor:grab;user-select:none;border:2px solid #e0a800}
+.chip.sel{outline:3px solid #2a6fb0}.chip.used{opacity:.35}
+.slot{display:inline-block;min-width:110px;min-height:30px;border-bottom:3px dashed #2a6fb0;text-align:center;background:#f3f8ff;border-radius:6px;font-weight:bold;margin:0 4px}
+.slot.ok{background:#c8f7c5;border-bottom-color:#2ca02c}.slot.no{background:#ffd0d0;border-bottom-color:#d33}
+.d{border-radius:12px;padding:10px;margin:8px 0;font-size:17px;line-height:1.9}.g{background:#d6f0ea}.o{background:#fde3cf}
+.n{background:#e8473b;color:#fff;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-weight:bold;margin-right:6px}
+.ctl{text-align:center}button{background:#2a6fb0;color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:16px;margin:4px;cursor:pointer}
+textarea{width:100%;box-sizing:border-box;border:2px solid #9bb;border-radius:10px;padding:8px;font-size:16px;min-height:70px;margin:4px 0}
+#res{font-size:18px;font-weight:bold;text-align:center}.cr{text-align:center;font-size:13px;color:#456}svg{width:100%;max-height:90px}
+</style></head><body><div class="w">
+<h1>💬 Team Talk 2 · Expressions: Watch out! · Wow! · It's so cute!</h1>
+<div class="card"><svg viewBox="0 0 600 90"><rect width="600" height="90" rx="12" fill="#cfe8ff"/><text x="60" y="58" font-size="46">🐘</text><text x="170" y="58" font-size="46">🐹</text><text x="280" y="58" font-size="46">🍳</text><text x="390" y="58" font-size="46">🚗</text><text x="500" y="58" font-size="46">🐬</text></svg>
+<b>Step 3:</b> Read and complete the dialogues with the correct expressions (each one is used <b>twice</b>). Drag a chip to a gap (or tap the chip, then the gap). Then listen and check.
+<audio id="au" controls preload="auto" style="width:100%" src="audio3.mp3"></audio>
+<div id="bank"></div></div>
+<div class="card" id="dl"></div>
+<div class="ctl"><button onclick="check()">✅ Check</button><button onclick="build()">🔄 Try again</button></div><div id="res"></div>
+<div class="cr">Created by T.Badria Alfalahi</div></div>
+<script>
+// [colour, line A, speaker-B before gap, answer, text after gap] ; edit answers here if needed
+const E=["Watch out!","Wow!","It's so cute!"];
+const D=[["g","Look at that elephant!","Wow!","It's so big!"],["o","Look what we got last weekend! — B: A hamster!","It's so cute!",""],
+["g","What's this? Are you cooking something? — B: Yes.","Watch out!","It's very hot!"],["o","Come on! Let's cross the road. — B:","Watch out!","There's a car!"],
+["g","What's that animal in the water? — B:","Wow!","It's a dolphin! I love dolphins!"],["o","This is my pet hamster. — B:","It's so cute!","I want one too!"]];
+let sel=null;
+function fill(s,t){s.textContent=t;s.dataset.v=t;s.className="slot"}
+function chip(t){const e=document.createElement("span");e.className="chip";e.textContent=t;e.draggable=true;
+e.ondragstart=ev=>ev.dataTransfer.setData("t",t);e.onclick=()=>{document.querySelectorAll(".sel").forEach(x=>x.classList.remove("sel"));sel=t;e.classList.add("sel")};return e}
+function build(){const b=document.getElementById("bank"),dl=document.getElementById("dl");b.innerHTML="";dl.innerHTML="";document.getElementById("res").textContent="";sel=null;
+[...E,...E].sort(()=>Math.random()-.5).forEach(t=>b.append(chip(t)));
+D.forEach((d,i)=>{const r=document.createElement("div");r.className="d "+d[0];const p=d[1].split(" — ");
+r.innerHTML='<span class="n">'+(i+1)+"</span><b>A:</b> "+p[0]+"<br>"+(p[1]?p[1]+" ":"<b>B:</b> ");
+const s=document.createElement("span");s.className="slot";s.ondragover=e=>e.preventDefault();s.ondrop=e=>{e.preventDefault();fill(s,e.dataTransfer.getData("t"))};
+s.onclick=()=>{if(sel){fill(s,sel);document.querySelectorAll(".sel").forEach(x=>x.classList.remove("sel"));sel=null}};
+r.append(s);r.append(" "+d[3]);dl.append(r)});
+}
+function check(){let sc=0;document.querySelectorAll(".d .slot").forEach((s,i)=>{const ok=s.dataset.v===D[i][2];s.className="slot "+(ok?"ok":"no");if(ok)sc++});
+document.getElementById("res").textContent="Score: "+sc+" / "+D.length+(sc==6?" 🌟 Excellent!":sc>=4?" 👍 Good job!":" 💪 Listen again and try!")}
+build();
+</script></body></html>
